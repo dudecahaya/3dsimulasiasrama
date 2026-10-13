@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Mekatronika Smart Dormitory - Politeknik Takumi</title>
+    <!-- Tailwind CSS untuk tampilan modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.6); }
+        .glow-red { box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+        .glow-blue { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen p-6">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-cyan-400 mb-2">Simulasi Sistem Smart Dormitory</h1>
+            <p class="text-slate-400">Proyek Mekatronika D4 Mechatronics Engineering - Politeknik Takumi</p>
+        </header>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- PANEL 1: KONTROL LUAR (KEYPAD) -->
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-cyan-300 flex items-center gap-2">
+                    <span>🚪</span> Panel Luar (Keypad)
+                </h2>
+                <p class="text-sm text-slate-400 mb-4">Simulasikan PIN saat masuk ke kamar asrama:</p>
+                
+                <div class="space-y-3">
+                    <button onclick="inputPin('123')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 px-4 rounded-lg transition shadow-md flex justify-between items-center">
+                        <span>PIN 123 (Istirahat Lama)</span>
+                        <span class="text-xs bg-emerald-800 px-2 py-1 rounded">AC ON + Lampu ON</span>
+                    </button>
+                    
+                    <button onclick="inputPin('321')" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-medium py-3 px-4 rounded-lg transition shadow-md flex justify-between items-center">
+                        <span>PIN 321 (Mampir Sebentar)</span>
+                        <span class="text-xs bg-amber-800 px-2 py-1 rounded">AC OFF + Lampu ON</span>
+                    </button>
+                </div>
+
+                <div class="mt-6 p-3 bg-slate-900 rounded border border-slate-700 text-center">
+                    <span class="text-xs text-slate-400">Status Kunci Pintu:</span>
+                    <div id="door-status" class="text-lg font-bold text-red-400 mt-1">TERKUNCI (LOCKED)</div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: VISUALISASI KAMAR 3D/2D -->
+            <div id="room-container" class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg flex flex-col justify-between transition-all duration-500">
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 text-cyan-300 flex items-center gap-2">
+                        <span>🛏️</span> Kondisi Kamar (Isi 4 Orang)
+                    </h2>
+                    <p class="text-sm text-slate-400 mb-6">Visualisasi status perangkat di dalam kamar asrama:</p>
+                </div>
+
+                <!-- Perangkat Status Box -->
+                <div class="space-y-4 my-auto">
+                    <!-- Lampu -->
+                    <div id="lamp-box" class="p-4 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-between transition">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl" id="lamp-icon">💡</span>
+                            <div>
+                                <div class="font-medium">Lampu Utama</div>
+                                <div class="text-xs text-slate-400" id="lamp-desc">Mati (OFF)</div>
+                            </div>
+                        </div>
+                        <span id="lamp-badge" class="px-2.5 py-1 text-xs font-bold rounded bg-red-900 text-red-300">OFF</span>
+                    </div>
+
+                    <!-- AC -->
+                    <div id="ac-box" class="p-4 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-between transition">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl" id="ac-icon">❄️</span>
+                            <div>
+                                <div class="font-medium">Pendingin Ruangan (AC)</div>
+                                <div class="text-xs text-slate-400" id="ac-desc">Mati (OFF)</div>
+                            </div>
+                        </div>
+                        <span id="ac-badge" class="px-2.5 py-1 text-xs font-bold rounded bg-red-900 text-red-300">OFF</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-xs text-slate-500 text-center">
+                    Luas kamar kecil dioptimalkan otomatis.
+                </div>
+            </div>
+
+            <!-- PANEL 3: KONTROL KELUAR (TOMBOL FISIK) -->
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-cyan-300 flex items-center gap-2">
+                    <span>🕹️</span> Tombol Keluar (Dinding)
+                </h2>
+                <p class="text-sm text-slate-400 mb-4">Simulasikan saat menekan tombol sebelum mengunci pintu:</p>
+                
+                <div class="space-y-3">
+                    <button onclick="pressButton('koper')" class="w-full bg-red-600 hover:bg-red-500 text-white font-medium py-3 px-4 rounded-lg transition shadow-md flex justify-between items-center">
+                        <span>🧳 Tombol Koper (Pergi Lama)</span>
+                        <span class="text-xs bg-red-900 px-2 py-1 rounded">AC & Lampu MATI</span>
+                    </button>
+                    
+                    <button onclick="pressButton('sandal')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 px-4 rounded-lg transition shadow-md flex justify-between items-center">
+                        <span>🩴 Tombol Sandal (Sebentar)</span>
+                        <span class="text-xs bg-blue-900 px-2 py-1 rounded">Lampu MATI, AC TETAP NYALA</span>
+                    </button>
+                </div>
+
+                <div class="mt-6 p-3 bg-slate-900 rounded border border-slate-700">
+                    <span class="text-xs text-slate-400 block mb-1">Aktivitas Sistem (Log):</span>
+                    <div id="log-box" class="text-xs text-cyan-400 font-mono h-16 overflow-y-auto">
+                        Sistem siap. Silakan masukkan PIN atau tekan tombol.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            door: "LOCKED",
+            lamp: false,
+            ac: false
+        };
+
+        function updateUI() {
+            // Door Status
+            const doorEl = document.getElementById("door-status");
+            if (state.door === "UNLOCKED") {
+                doorEl.innerText = "TERBUKA (UNLOCKED)";
+                doorEl.className = "text-lg font-bold text-emerald-400 mt-1";
+            } else {
+                doorEl.innerText = "TERKUNCI (LOCKED)";
+                doorEl.className = "text-lg font-bold text-red-400 mt-1";
+            }
+
+            // Lamp Status
+            const lampBox = document.getElementById("lamp-box");
+            const lampBadge = document.getElementById("lamp-badge");
+            const lampDesc = document.getElementById("lamp-desc");
+            const roomContainer = document.getElementById("room-container");
+
+            if (state.lamp) {
+                lampBox.className = "p-4 rounded-lg bg-emerald-950/40 border border-emerald-500/50 flex items-center justify-between transition glow-green";
+                lampBadge.className = "px-2.5 py-1 text-xs font-bold rounded bg-emerald-600 text-white";
+                lampBadge.innerText = "ON";
+                lampDesc.innerText = "Menyala Terang";
+                roomContainer.classList.add("border-emerald-500/30");
+            } else {
+                lampBox.className = "p-4 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-between transition";
+                lampBadge.className = "px-2.5 py-1 text-xs font-bold rounded bg-red-900 text-red-300";
+                lampBadge.innerText = "OFF";
+                lampDesc.innerText = "Mati (OFF)";
+                roomContainer.classList.remove("border-emerald-500/30");
+            }
+
+            // AC Status
+            const acBox = document.getElementById("ac-box");
+            const acBadge = document.getElementById("ac-badge");
+            const acDesc = document.getElementById("ac-desc");
+
+            if (state.ac) {
+                acBox.className = "p-4 rounded-lg bg-blue-950/40 border border-blue-500/50 flex items-center justify-between transition glow-blue";
+                acBadge.className = "px-2.5 py-1 text-xs font-bold rounded bg-blue-600 text-white";
+                acBadge.innerText = "ON";
+                acDesc.innerText = "Dingin (Menyala)";
+            } else {
+                acBox.className = "p-4 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-between transition";
+                acBox.className = "p-4 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-between transition";
+                acBadge.className = "px-2.5 py-1 text-xs font-bold rounded bg-red-900 text-red-300";
+                acBadge.innerText = "OFF";
+                acDesc.innerText = "Mati (OFF)";
+            }
+        }
+
+        function logActivity(text) {
+            const logBox = document.getElementById("log-box");
+            logBox.innerHTML += `> ${text}<br>`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function inputPin(pin) {
+            state.door = "UNLOCKED";
+            if (pin === '123') {
+                state.lamp = true;
+                state.ac = true;
+                logActivity("PIN 123 dimasukkan: Pintu Terbuka | Mode Istirahat (AC & Lampu ON)");
+            } else if (pin === '321') {
+                state.lamp = true;
+                state.ac = false;
+                logActivity("PIN 321 dimasukkan: Pintu Terbuka | Mode Mampir (Lampu ON, AC TETAP MATI)");
+            }
+            updateUI();
+        }
+
+        function pressButton(type) {
+            state.door = "LOCKED";
+            if (type === 'koper') {
+                state.lamp = false;
+                state.ac = false;
+                logActivity("Tombol Koper ditekan: Pintu Terkunci | AC & Lampu dimatikan.");
+            } else if (type === 'sandal') {
+                state.lamp = false;
+                // AC dibiarkan sesuai status sebelumnya
+                logActivity("Tombol Sandal ditekan: Pintu Terkunci | Lampu Mati, AC TETAP MENYALA.");
+            }
+            updateUI();
+        }
+    </script>
+</body>
+</html>
